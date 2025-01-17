@@ -120,7 +120,7 @@ app.post("/client/register", async (req, res) => {
     const database = client.db("WanderWise");
     const collection = database.collection("users");
 
-    // // Check if the user already exists
+    // Check if the user already exists
     const existingUser = await collection.findOne({ email });
     if (existingUser) {
       return res
@@ -144,10 +144,16 @@ app.post("/client/register", async (req, res) => {
     // Insert the new user into the database
     await collection.insertOne(newUser);
 
+    // Generate JWT token
+    const token = jwt.sign({ email: newUser.email }, process.env.JWT_SECRET, {
+      expiresIn: "12h",
+    });
+
     res.status(201).send({
       success: true,
       message: "User registered successfully",
       newUser,
+      token, // Send the token in the response
     });
   } catch (error) {
     console.error("Error registering user:", error);
