@@ -161,6 +161,24 @@ app.post("/client/register", async (req, res) => {
   }
 });
 
+// client info sent to web by email
+app.get("/clientinfo/:email", async (req, res) => {
+  try {
+    const email = req.params.email;
+    const collection = database.collection("users");
+    const query = {
+      email: email,
+    };
+    const result = await collection.findOne(query);
+    if (!result) {
+      return res.status(404).send("User not found");
+    }
+    res.send(result);
+  } catch {
+    res.status(500).send("Error fetching data");
+  }
+});
+
 // client user stories
 app.get("/client/userStories/:email", async (req, res) => {
   try {
