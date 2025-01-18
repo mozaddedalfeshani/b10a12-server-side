@@ -1,8 +1,11 @@
-const express = require("express");
 const dotenv = require("dotenv");
+dotenv.config(); // Load .env.local file
+
+const express = require("express");
 // use cors to allow cross origin resource sharing
 const cors = require("cors");
 var jwt = require("jsonwebtoken");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const cookieParser = require("cookie-parser");
 const app = express();
 const bcrypt = require("bcryptjs"); // For password hashing
@@ -10,14 +13,13 @@ const bodyParser = require("body-parser"); // Body parser for handling JSON data
 
 // Middleware for parsing JSON requests
 app.use(bodyParser.json());
-dotenv.config({ path: "./.env.local" }); // Load .env.local file
 
 const port = process.env.PORT || 9000;
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 console.log(process.env.MONGO_USERNAME);
 console.log(process.env.MONGO_PASS);
-
+console.log(process.env.STRIPE_SECRET_KEY);
 const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASS}@tourism.ipsfd.mongodb.net/?retryWrites=true&w=majority&appName=tourism`;
 const client = new MongoClient(uri);
 
@@ -246,6 +248,23 @@ app.get("/client/userStories/:email", async (req, res) => {
   } catch {
     res.status(500).send("Error fetching data");
   }
+});
+
+// PAYMENT ZONE
+
+app.post("/create-payment-intent", async (req, res) => {
+  const { items } = req.body;
+
+  // Create a PaymentIntent with the order amount and currency
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: calculateOrderAmount(items),
+    currency: "usd",
+    payment_method_types: ["card"],
+  });
+
+  res.send({
+    clientSecret: paymentIntent.client_secret,
+  });
 });
 
 app.get("/client/userStories", async (req, res) => {
