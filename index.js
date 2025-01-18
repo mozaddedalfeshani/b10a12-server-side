@@ -138,7 +138,7 @@ app.post("/client/register", async (req, res) => {
       password: hashedPassword,
       icon: iconUrl || "", // Default to an empty string if no icon URL is provided
       stories: [], // Initialize as an empty array
-      assignedTours: [], // Initialize as an empty array
+      booking: [], // Initialize as an empty array
     };
 
     // Insert the new user into the database
@@ -177,6 +177,17 @@ app.get("/clientinfo/:email", async (req, res) => {
   } catch {
     res.status(500).send("Error fetching data");
   }
+});
+//boooking info
+app.post("/booking", async (req, res) => {
+  const values = req.body;
+  const collection = database.collection("users");
+  // insert / append booking info to user booking array
+  const result = await collection.updateOne(
+    { email: values.touristEmail },
+    { $push: { booking: values } }
+  );
+  res.send(result);
 });
 
 // client user stories
