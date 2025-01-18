@@ -15,8 +15,7 @@ dotenv.config();
 const port = process.env.PORT || 9000;
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
-const uri =
-  "mongodb+srv://imurad2020:yJfOu6iDDEA0qGEZ@tourism.ipsfd.mongodb.net/?retryWrites=true&w=majority&appName=tourism";
+const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASS}@tourism.ipsfd.mongodb.net/?retryWrites=true&w=majority&appName=tourism`;
 const client = new MongoClient(uri);
 
 client.connect((err) => {
