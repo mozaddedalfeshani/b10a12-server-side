@@ -192,6 +192,47 @@ app.post("/booking", async (req, res) => {
   res.send(result);
 });
 
+// cancel booking by index and email
+app.delete("/cancelBooking", async (req, res) => {
+  const { email, packageName, tourDate } = req.body;
+
+  if (!email || !packageName || !tourDate) {
+    return res.status(400).send({
+      success: false,
+      message: "Missing required fields: email, packageName, or tourDate",
+    });
+  }
+
+  try {
+    const db = client.db("WanderWise");
+    const collection = db.collection("users");
+
+    // Update document to remove one booking
+    const result = await collection.updateOne(
+      { email: email }, // Match user by email
+      { $pull: { booking: { packageName, tourDate } } } // Remove specific booking
+    );
+
+    if (result.modifiedCount > 0) {
+      res.status(200).send({
+        success: true,
+        message: "Booking deleted successfully",
+      });
+    } else {
+      res.status(404).send({
+        success: false,
+        message: "Booking not found",
+      });
+    }
+  } catch (error) {
+    console.error("Error deleting booking:", error);
+    res.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
 // client user stories
 app.get("/client/userStories/:email", async (req, res) => {
   try {
