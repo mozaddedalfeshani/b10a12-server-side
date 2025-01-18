@@ -10,10 +10,13 @@ const bodyParser = require("body-parser"); // Body parser for handling JSON data
 
 // Middleware for parsing JSON requests
 app.use(bodyParser.json());
-dotenv.config();
+dotenv.config({ path: "./.env.local" }); // Load .env.local file
 
 const port = process.env.PORT || 9000;
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+
+console.log(process.env.MONGO_USERNAME);
+console.log(process.env.MONGO_PASS);
 
 const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASS}@tourism.ipsfd.mongodb.net/?retryWrites=true&w=majority&appName=tourism`;
 const client = new MongoClient(uri);
