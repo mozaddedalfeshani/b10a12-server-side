@@ -272,6 +272,23 @@ app.post("/create-payment-intent", async (req, res) => {
   });
 });
 
+// Tour Guide Applications
+app.post("/tgApplication", async (req, res) => {
+  const data = req.body;
+  console.log(data);
+  try {
+    const collection = database.collection("tgApplications");
+    const result = await collection.insertOne(data);
+    res.send({
+      success: true,
+      message: "Application submitted successfully",
+      result: result,
+    });
+  } catch {
+    res.status(500).send("Error submitting application");
+  }
+});
+
 app.get("/client/userStories", async (req, res) => {
   const collection = database.collection("stories");
   const result = await collection.find().toArray();
