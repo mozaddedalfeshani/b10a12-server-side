@@ -143,6 +143,8 @@ app.post("/client/register", async (req, res) => {
       icon: iconUrl || "", // Default to an empty string if no icon URL is provided
       stories: [], // Initialize as an empty array
       booking: [], // Initialize as an empty array
+      // add which type of user tourist , or tour guide
+      userType: "tourist",
     };
 
     // Insert the new user into the database
