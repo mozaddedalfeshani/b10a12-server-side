@@ -105,6 +105,55 @@ app.get("/packages/:id", async (req, res) => {
   }
 });
 
+// The following below code just give total count of each collection
+
+// app.get("/total/totalpayment", async (req, res) => {
+//   const collection = database.collection("payment");
+//   const result = await collection.find().toArray();
+//   res.send(result);
+// });
+
+app.get("/total/totaltg", async (req, res) => {
+  const collection = database.collection("tourGuides");
+  const result = await collection.find().toArray();
+  // total count of tour guide
+  const totals = result.length;
+
+  const total = totals.toString();
+  res.send(total);
+});
+
+app.get("/total/totalpackages", async (req, res) => {
+  const collection = database.collection("packages");
+  const result = await collection.find().toArray();
+  // total count of packages
+  const totals = result.length;
+
+  const total = totals.toString();
+  res.send(total);
+});
+
+app.get("/total/totalclients", async (req, res) => {
+  const collection = database.collection("users");
+  const result = await collection.find().toArray();
+  // total count of clients
+  const totals = result.length;
+
+  const total = totals.toString();
+  res.send(total);
+});
+
+app.get("/total/totalstories", async (req, res) => {
+  const collection = database.collection("stories");
+  const result = await collection.find().toArray();
+  // total count of stories
+  const totals = result.length;
+
+  const total = totals.toString();
+  res.send(total);
+});
+
+//////////////////////////////////////////////////
 //  /client/userStories
 // all about client
 
