@@ -324,17 +324,31 @@ app.post("/create-payment-intent", async (req, res) => {
 // Tour Guide Applications
 app.post("/tgApplication", async (req, res) => {
   const data = req.body;
-  console.log(data);
-  try {
-    const collection = database.collection("tgApplications");
-    const result = await collection.insertOne(data);
-    res.send({
-      success: true,
-      message: "Application submitted successfully",
-      result: result,
+  // find the user by email
+
+  const email = data.email;
+  //check if user exist
+  const collection = database.collection("tgApplications");
+  const user = await collection.findOne({ email });
+
+  if (user) {
+    return res.status(400).send({
+      success: false,
+      message: "Application already submitted",
     });
-  } catch {
-    res.status(500).send("Error submitting application");
+  } else {
+    console.log(data);
+    try {
+      const collection = database.collection("tgApplications");
+      const result = await collection.insertOne(data);
+      res.send({
+        success: true,
+        message: "Application submitted successfully",
+        result: result,
+      });
+    } catch {
+      res.status(500).send("Error submitting application");
+    }
   }
 });
 
