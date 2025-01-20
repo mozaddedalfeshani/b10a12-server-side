@@ -23,13 +23,13 @@ console.log(process.env.STRIPE_SECRET_KEY);
 const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASS}@tourism.ipsfd.mongodb.net/?retryWrites=true&w=majority&appName=tourism`;
 const client = new MongoClient(uri);
 
-client.connect((err) => {
-  if (err) {
-    console.error("Failed to connect to MongoDB", err);
-    process.exit(1);
-  }
-  console.log("Connected to MongoDB");
-});
+// client.connect((err) => {
+//   if (err) {
+//     console.error("Failed to connect to MongoDB", err);
+//     process.exit(1);
+//   }
+//   console.log("Connected to MongoDB");
+// });
 
 app.use(cors());
 app.use(express.json());
@@ -297,7 +297,7 @@ app.get("/client/userStories", async (req, res) => {
 
 // server respons
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello World! 3");
 });
 
 app.listen(port, () => {
