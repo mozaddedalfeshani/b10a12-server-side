@@ -370,6 +370,21 @@ app.post("/admin/addPackages", async (req, res) => {
   }
 });
 
+// admin manage tourguides applications
+app.get("/admin/tgApplications", async (req, res) => {
+  const collection = database.collection("tgApplications");
+  const result = await collection.find().toArray();
+  res.send(result);
+});
+
+// reject applications
+app.delete("/admin/tgApplicationsReject/:id", async (req, res) => {
+  const id = req.params.id;
+  const collection = database.collection("tgApplications");
+  const result = await collection.deleteOne({ _id: new ObjectId(id) });
+  res.send(result);
+});
+
 app.get("/client/userStories", async (req, res) => {
   const collection = database.collection("stories");
   const result = await collection.find().toArray();
