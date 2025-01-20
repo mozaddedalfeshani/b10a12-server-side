@@ -385,6 +385,39 @@ app.delete("/admin/tgApplicationsReject/:id", async (req, res) => {
   res.send(result);
 });
 
+// accept applications
+app.post("/admin/tgAAccept/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const collection = database.collection("tgApplications");
+    const user = await collection.findOne({ _id: new ObjectId(id) });
+    const email = user.email;
+
+    // delete this applications from applications
+    await collection.deleteOne({ _id: new ObjectId(id) });
+
+    // find on user by email and get the user info
+    const uesrInfo = await database.collection("users").findOne({ email });
+
+    // add this userInfo to tourGuides
+    await database.collection("tourGuides").insertOne(uesrInfo);
+
+    // set the user type to tourGuide
+    await database
+      .collection("tourGuides")
+      .updateOne({ email }, { $set: { userType: "tourGuide" } });
+
+    // now gett the user info and send to front end by email
+
+    const result = await database.collection("tourGuides").findOne({ email });
+
+    res.send(uesrInfo, result);
+  } catch (error) {
+    console.error("Error accepting application:", error);
+    res.status(500).send("Internal server error");
+  }
+});
+
 app.get("/client/userStories", async (req, res) => {
   const collection = database.collection("stories");
   const result = await collection.find().toArray();
