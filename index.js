@@ -72,6 +72,45 @@ app.get("/api/samples", async (req, res) => {
   res.send(result);
 });
 
+// get all users
+app.get("/users", async (req, res) => {
+  const collection = database.collection("users");
+  const result = await collection.find().toArray();
+
+  res.send(result);
+});
+
+// get all tour guides
+app.get("/tourGuides", async (req, res) => {
+  const collection = database.collection("tourGuides");
+  const result = await collection.find().toArray();
+  res.send(result);
+});
+
+// Search and filter users
+app.get("/users/search", async (req, res) => {
+  const { query, role } = req.query;
+  const collection = database.collection("users");
+
+  const filter = {};
+  if (query) {
+    filter.$or = [
+      { name: { $regex: query, $options: "i" } },
+      { email: { $regex: query, $options: "i" } },
+    ];
+  }
+  if (role) {
+    filter.userType = role;
+  }
+
+  try {
+    const result = await collection.find(filter).toArray();
+    res.send(result);
+  } catch (error) {
+    res.status(500).send("Error fetching data");
+  }
+});
+
 app.get("/client/homeStories", async (req, res) => {
   const collection = database.collection("stories");
   // only 4 data
