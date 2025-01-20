@@ -338,6 +338,38 @@ app.post("/tgApplication", async (req, res) => {
   }
 });
 
+// admin add pacakges
+app.post("/admin/addPackages", async (req, res) => {
+  const data = req.body;
+
+  // Create dataset with required structure
+  const dataset = {
+    title: data.title,
+    tourType: data.tourType,
+    price: data.price,
+    images: data.images,
+    details: data.details,
+    tourPlan: data.tourPlan,
+    comments: [],
+    likes: [],
+    shares: [],
+  };
+
+  try {
+    const collection = database.collection("packages");
+    const result = await collection.insertOne(dataset);
+    console.log(dataset);
+    res.send({
+      success: true,
+      message: "Package added successfully",
+      result: result,
+    });
+  } catch (error) {
+    console.error("Error adding package:", error);
+    res.status(500).send("Error adding package");
+  }
+});
+
 app.get("/client/userStories", async (req, res) => {
   const collection = database.collection("stories");
   const result = await collection.find().toArray();
